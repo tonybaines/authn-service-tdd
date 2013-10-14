@@ -13,7 +13,7 @@ public class Resource {
         this.allowedUsers = new HashSet<User>(Arrays.asList(allowedUsers));
     }
 
-    public boolean allowedForUser(User user) {
+    public boolean allowedFor(User user) {
         return allowedUsers.contains(user);
     }
 
