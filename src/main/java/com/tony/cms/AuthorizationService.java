@@ -15,7 +15,12 @@ public class AuthorizationService {
         }
         if (resources.contains(resource)) {
             if (authnService.isAuthenticated(user)) {
-                return true;
+                if (resource.allowedForUser(user)) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
             return false;
         }
