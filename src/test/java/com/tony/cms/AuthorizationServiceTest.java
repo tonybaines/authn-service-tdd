@@ -21,7 +21,10 @@ public class AuthorizationServiceTest {
     @Before
     public void setUp() throws Exception {
         protectedResources.addResource(protectedResource);
+
         authnService = Mockito.mock(AuthenticationService.class);
+        when(authnService.isAuthenticated(authenticatedUser1)).thenReturn(true);
+
         authzService = new AuthorizationService(protectedResources, authnService);
     }
 
@@ -47,7 +50,6 @@ public class AuthorizationServiceTest {
 
     @Test
     public void shouldAcceptRequestsFromAnAuthenticatedUserToAProtectedResourceWithoutExtraRestrictions() throws Exception {
-        when(authnService.isAuthenticated(authenticatedUser1)).thenReturn(true);
         assertThat(authzService.isAllowed(authenticatedUser1, protectedResource), is(true));
         verify(authnService).isAuthenticated(authenticatedUser1);
     }
