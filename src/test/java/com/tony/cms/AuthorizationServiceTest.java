@@ -16,6 +16,7 @@ public class AuthorizationServiceTest {
     private Resource unprotectedResource = new Resource("/unprotected/thing", authenticatedUser1);
     private Resource protectedResourceUser1Allowed = new Resource("/protected/thing", authenticatedUser1);
     private Resource protectedResourceUser2Allowed = new Resource("/protected/other/thing", authenticatedUser2);
+    private Resource protectedResourceUsers1and2Allowed = new Resource("/protected/other/thing", authenticatedUser1, authenticatedUser2);
     private AuthorizationService authzService;
     private Resources protectedResources = new Resources();
     private AuthenticationService authnService;
@@ -60,12 +61,17 @@ public class AuthorizationServiceTest {
 
     @Test
     public void shouldAllowAccessFromAnAuthenticatedUserToAProtectedResourceWhereTheyAreExplicitlyNamed() throws Exception {
-        Resource resource = new Resource("/protected/other/thing", authenticatedUser1);
-        assertThat(authzService.isAllowed(authenticatedUser1, resource), is(true));
+        assertThat(authzService.isAllowed(authenticatedUser1, protectedResourceUser1Allowed), is(true));
     }
 
     @Test
     public void shouldRejectAccessFromAnAuthenticatedUserToAResourceWithExplicitPermissionsWhereTheyAreNotNamed() throws Exception {
         assertThat(authzService.isAllowed(authenticatedUser1, protectedResourceUser2Allowed), is(false));
+    }
+
+    @Test
+    public void shouldAllowAccessFromAnAuthenticatedUserToAProtectedResourceWhereTheyAreExplicitlyNamedAsOneOfMany() throws Exception {
+        assertThat(authzService.isAllowed(authenticatedUser1, protectedResourceUsers1and2Allowed), is(true));
+        assertThat(authzService.isAllowed(authenticatedUser2, protectedResourceUsers1and2Allowed), is(true));
     }
 }
