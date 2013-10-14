@@ -2,40 +2,53 @@ package com.tony.cms;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class AuthorizationServiceTest {
     private User anonUser = User.ANONYMOUS;
+    private User authenticatedUser1 = new User("authenticatedUser1");
     private Resource unprotectedResource = new Resource("/unprotected/thing");
     private Resource protectedResource = new Resource("/protected/thing");
-    private AuthorizationService authService;
+    private AuthorizationService authzService;
     private Resources protectedResources = new Resources();
+    private AuthenticationService authnService;
 
     @Before
     public void setUp() throws Exception {
         protectedResources.addResource(protectedResource);
-        authService = new AuthorizationService(protectedResources);
+        authnService = Mockito.mock(AuthenticationService.class);
+        authzService = new AuthorizationService(protectedResources, authnService);
     }
 
     @Test
     public void shouldAcceptRequestsFromAnAnonymousUserToAnUnprotectedResource() throws Exception {
-        assertThat(authService.isAllowed(anonUser, unprotectedResource), is(true));
+        assertThat(authzService.isAllowed(anonUser, unprotectedResource), is(true));
     }
 
     @Test
     public void shouldRejectRequestsFromAnAnonymousUserToAProtectedResource() throws Exception {
-        assertThat(authService.isAllowed(anonUser, protectedResource), is(false));
+        assertThat(authzService.isAllowed(anonUser, protectedResource), is(false));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowAnExceptionIfAnInvalidUserIsSupplied() throws Exception {
-        authService.isAllowed(null, unprotectedResource);
+        authzService.isAllowed(null, unprotectedResource);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowAnExceptionIfAnInvalidResourceIsSupplied() throws Exception {
-        authService.isAllowed(anonUser, null);
+        authzService.isAllowed(anonUser, null);
+    }
+
+    @Test
+    public void shouldAcceptRequestsFromAnAuthenticatedUserToAProtectedResourceWithoutExtraRestrictions() throws Exception {
+        when(authnService.isAuthenticated(authenticatedUser1)).thenReturn(true);
+        assertThat(authzService.isAllowed(authenticatedUser1, protectedResource), is(true));
+        verify(authnService).isAuthenticated(authenticatedUser1);
     }
 }

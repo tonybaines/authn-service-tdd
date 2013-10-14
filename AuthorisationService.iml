@@ -10,5 +10,11 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="test-libs" level="project" />
   </component>
+  <component name="SonarSettingsModuleComponent">
+    <option name="host" value="" />
+    <option name="user" value="" />
+    <option name="password" value="" />
+    <option name="resource" value="" />
+  </component>
 </module>
 
