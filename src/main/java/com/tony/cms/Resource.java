@@ -16,4 +16,29 @@ public class Resource {
     public boolean allowedForUser(User user) {
         return allowedUsers.contains(user);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Resource resource = (Resource) o;
+
+        if (!resourcePath.equals(resource.resourcePath)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return resourcePath.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Resource{" +
+            "resourcePath='" + resourcePath + '\'' +
+            ", allowedUsers=" + allowedUsers +
+            '}';
+    }
 }
