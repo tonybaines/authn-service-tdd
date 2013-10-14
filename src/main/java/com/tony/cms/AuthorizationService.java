@@ -8,6 +8,9 @@ public class AuthorizationService {
     }
 
     public boolean isAllowed(User user, Resource resource) {
+        if (user == null || resource == null) {
+            throw new IllegalArgumentException("Null parameter values are not allowed");
+        }
         return !(resources.contains(resource));
     }
 }

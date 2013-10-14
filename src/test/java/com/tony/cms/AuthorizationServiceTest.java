@@ -28,4 +28,14 @@ public class AuthorizationServiceTest {
     public void shouldRejectRequestsFromAnAnonymousUserToAProtectedResource() throws Exception {
         assertThat(authService.isAllowed(anonUser, protectedResource), is(false));
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowAnExceptionIfAnInvalidUserIsSupplied() throws Exception {
+        authService.isAllowed(null, unprotectedResource);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowAnExceptionIfAnInvalidResourceIsSupplied() throws Exception {
+        authService.isAllowed(anonUser, null);
+    }
 }
