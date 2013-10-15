@@ -14,14 +14,25 @@ public class AuthorizationService {
             throw new IllegalArgumentException("Null parameter values are not allowed");
         }
 
-        if (isUnprotected(resource)) return new AuthorizationResponse(true);
-        if (unauthenticated(user)) return new AuthorizationResponse(false);
-        if (resource.allowedFor(user)) return new AuthorizationResponse(true);
+        if (isUnprotected(resource))
+            return new AuthorizationResponse(true);
+        if (unauthenticated(user))
+            return new AuthorizationResponse(false);
 
-        return new AuthorizationResponse(false);
+        AuthorizationResponse userAllowedResponse = resource.allowedFor(user);
+        if (userAllowedResponse.allowed()) {
+            return new AuthorizationResponse(true);
+        }
+        else {
+            return userAllowedResponse;
+        }
     }
 
-    private boolean unauthenticated(User user) {return !authnService.isAuthenticated(user);}
+    private boolean unauthenticated(User user) {
+        return !authnService.isAuthenticated(user);
+    }
 
-    private boolean isUnprotected(Resource resource) {return !resources.contains(resource);}
+    private boolean isUnprotected(Resource resource) {
+        return !resources.contains(resource);
+    }
 }

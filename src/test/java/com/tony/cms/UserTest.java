@@ -9,7 +9,7 @@ public class UserTest {
     @Test
     public void shouldIndicateWhetherAUserIsAMemberOfAGroup() throws Exception {
         final User user = new User("foo");
-        Group group = new Group() {{
+        Group group = new Group("group-bar") {{
             addUser(user);
         }};
         assertThat(user.isAMemberOf(group), is(true));

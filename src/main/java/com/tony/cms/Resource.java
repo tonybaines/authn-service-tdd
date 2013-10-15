@@ -22,19 +22,33 @@ public class Resource {
         this.allowedUsers = Collections.emptySet();
     }
 
-    public boolean allowedFor(User user) {
-        return isAllowedIndividually(user) || isInAnAllowedGroup(user);
+    public AuthorizationResponse allowedFor(User user) {
+        if (isAllowedIndividually(user)) {
+            return new AuthorizationResponse(true);
+        }
+        else {
+            return isInAnAllowedGroup(user);
+        }
     }
 
     private boolean isAllowedIndividually(User user) {
         return allowedUsers.contains(user);
     }
 
-    private boolean isInAnAllowedGroup(User user) {
+    private AuthorizationResponse isInAnAllowedGroup(User user) {
         for (Group allowedGroup : allowedGroups) {
-            if (user.isAMemberOf(allowedGroup)) return true;
+            if (user.isAMemberOf(allowedGroup)) return new AuthorizationResponse(true);
         }
-        return false;
+
+        if (!allowedGroups.isEmpty()) {
+            StringBuilder reason = new StringBuilder("Access is available for members of groups: ['");
+            for (Group allowedGroup : allowedGroups) {
+                reason.append(allowedGroup.toString());
+            }
+            reason.append("']");
+            return new AuthorizationResponse(false, reason.toString());
+        }
+        return new AuthorizationResponse(false);
     }
 
     @Override

@@ -1,15 +1,14 @@
 package com.tony.cms;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static com.tony.cms.AuthorizationServiceTest.Fixture.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static com.tony.cms.AuthorizationServiceTest.Fixture.*;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mockito;
 
 public class AuthorizationServiceTest {
     private User anonUser = User.ANONYMOUS;
@@ -87,10 +86,10 @@ public class AuthorizationServiceTest {
     }
 
     @Test
-    @Ignore("Pending test: refactoring required")
     public void shouldGetAListOfAllowedGroupsWhenAuthorizationFailsForAnAuthenticatedUserAndGroupsAreDefinedForTheResource() throws Exception {
         AuthorizationResponse authzResponse = authzService.isAllowed(authenticatedUser2(), protectedResourceGroup1Allowed());
         assertThat(authzResponse.allowed(), is(false));
+        assertThat(authzResponse.reason(), is("Access is available for members of groups: ['group-1']"));
     }
 
     public static class Fixture {
@@ -103,7 +102,7 @@ public class AuthorizationServiceTest {
         }
 
         public static Group group1() {
-            return new Group() {
+            return new Group("group-1") {
                 {
                     addUser(authenticatedUser1());
                 }
@@ -111,7 +110,7 @@ public class AuthorizationServiceTest {
         }
 
         public static Group group2() {
-            return new Group() {
+            return new Group("group-2") {
                 {
                     addUser(authenticatedUser1());
                     addUser(authenticatedUser2());
