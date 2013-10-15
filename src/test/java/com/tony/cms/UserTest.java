@@ -14,4 +14,14 @@ public class UserTest {
         }};
         assertThat(user.isAMemberOf(group), is(true));
     }
+
+    @Test
+    public void instancesWithTheSameUserIdAreConsideredEqual() throws Exception {
+        assertThat(new User("foo"), is(new User("foo")));
+    }
+
+    @Test
+    public void instancesWithDifferentUserIdsAreNotEqual() throws Exception {
+        assertThat(new User("foo"), is(not((new User("bar")))));
+    }
 }
