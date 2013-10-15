@@ -6,8 +6,8 @@ public class ResourcesTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAllowTwoResourcesToBeAddedWithTheSamePath() throws Exception {
         new Resources() {{
-            addResource(new Resource("/path"));
-            addResource(new Resource("/path"));
+            addResource(new Resource("/path", User.ANONYMOUS));
+            addResource(new Resource("/path", User.ANONYMOUS));
         }};
     }
 }

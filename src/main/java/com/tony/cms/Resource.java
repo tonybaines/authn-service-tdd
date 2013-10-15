@@ -1,20 +1,40 @@
 package com.tony.cms;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Resource {
     private final String resourcePath;
     private final Set<User> allowedUsers;
+    private final Set<Group> allowedGroups;
 
     public Resource(String resourcePath, User ... allowedUsers) {
         this.resourcePath = resourcePath;
         this.allowedUsers = new HashSet<User>(Arrays.asList(allowedUsers));
+        this.allowedGroups = Collections.emptySet();
+    }
+
+    public Resource(String resourcePath, Group... allowedGroups) {
+        this.resourcePath = resourcePath;
+        this.allowedGroups = new HashSet<Group>(Arrays.asList(allowedGroups));
+        this.allowedUsers = Collections.emptySet();
     }
 
     public boolean allowedFor(User user) {
+        return isAllowedIndividually(user) || isInAnAllowedGroup(user);
+    }
+
+    private boolean isAllowedIndividually(User user) {
         return allowedUsers.contains(user);
+    }
+
+    private boolean isInAnAllowedGroup(User user) {
+        for (Group allowedGroup : allowedGroups) {
+            if (user.isAMemberOf(allowedGroup)) return true;
+        }
+        return false;
     }
 
     @Override

@@ -7,4 +7,8 @@ public class User {
     public User(String userId) {
         this.userId = userId;
     }
+
+    public boolean isAMemberOf(Group group) {
+        return group.includes(this);
+    }
 }
