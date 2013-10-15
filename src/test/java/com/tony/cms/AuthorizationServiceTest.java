@@ -76,6 +76,13 @@ public class AuthorizationServiceTest {
     @Test
     public void shouldAllowAccessFromAnAuthenticatedUserToAProtectedResourceWhereTheyAreAMemberOfANamedGroup() throws Exception {
         assertThat(authzService.isAllowed(authenticatedUser1(), protectedResourceGroup1Allowed()), is(true));
+        assertThat(authzService.isAllowed(authenticatedUser1(), protectedResourceGroup2Allowed()), is(true));
+        assertThat(authzService.isAllowed(authenticatedUser2(), protectedResourceGroup2Allowed()), is(true));
+    }
+
+    @Test
+    public void shouldNotAllowAccessFromAnAuthenticatedUserToAProtectedResourceWhereTheyAreANotMemberOfANamedGroup() throws Exception {
+        assertThat(authzService.isAllowed(authenticatedUser2(), protectedResourceGroup1Allowed()), is(false));
     }
 
     public static class Fixture {
@@ -91,6 +98,15 @@ public class AuthorizationServiceTest {
             return new Group() {
                 {
                     addUser(authenticatedUser1());
+                }
+            };
+        }
+
+        public static Group group2() {
+            return new Group() {
+                {
+                    addUser(authenticatedUser1());
+                    addUser(authenticatedUser2());
                 }
             };
         }
@@ -113,6 +129,10 @@ public class AuthorizationServiceTest {
 
         public static Resource protectedResourceGroup1Allowed() {
             return new Resource("/protected/thing/by-group", group1());
+        }
+
+        public static Resource protectedResourceGroup2Allowed() {
+            return new Resource("/protected/thing/by-group/2", group2());
         }
     }
 }
