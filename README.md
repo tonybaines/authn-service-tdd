@@ -28,6 +28,6 @@ Stories
 2.	Some resources require an authenticated user, but no more
 3.	Some resources are only available to one or more named users
 4.	Some resources are only available to members of a specific group
-5.	The response in the case of a failed authorisation where groups must indicate the group(s) that do have access
+5.	The response in the case of a failed authorisation where groups are defined must indicate the group(s) that do have access
 
 

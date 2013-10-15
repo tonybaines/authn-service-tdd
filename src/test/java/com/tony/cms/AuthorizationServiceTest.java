@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import static com.tony.cms.AuthorizationServiceTest.Fixture.*;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -83,6 +84,13 @@ public class AuthorizationServiceTest {
     @Test
     public void shouldNotAllowAccessFromAnAuthenticatedUserToAProtectedResourceWhereTheyAreANotMemberOfANamedGroup() throws Exception {
         assertThat(authzService.isAllowed(authenticatedUser2(), protectedResourceGroup1Allowed()), is(false));
+    }
+
+    @Test
+    @Ignore("Pending test: refactoring required")
+    public void shouldGetAListOfAllowedGroupsWhenAuthorizationFailsForAnAuthenticatedUserAndGroupsAreDefinedForTheResource() throws Exception {
+//        AuthorizationResponse authzResponse = authzService.isAllowed(authenticatedUser2(), protectedResourceGroup1Allowed());
+//        assertThat(authzResponse.allowed(), is(false));
     }
 
     public static class Fixture {
