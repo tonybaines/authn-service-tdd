@@ -9,17 +9,16 @@ public class AuthorizationService {
         this.authnService = authnService;
     }
 
-    public boolean isAllowed(User user, Resource resource) {
+    public AuthorizationResponse isAllowed(User user, Resource resource) {
         if (user == null || resource == null) {
             throw new IllegalArgumentException("Null parameter values are not allowed");
         }
 
-        if (isUnprotected(resource)) return true;
-        if (unauthenticated(user)) return false;
-        if (resource.allowedFor(user)) return true;
+        if (isUnprotected(resource)) return new AuthorizationResponse(true);
+        if (unauthenticated(user)) return new AuthorizationResponse(false);
+        if (resource.allowedFor(user)) return new AuthorizationResponse(true);
 
-        return false;
-
+        return new AuthorizationResponse(false);
     }
 
     private boolean unauthenticated(User user) {return !authnService.isAuthenticated(user);}
