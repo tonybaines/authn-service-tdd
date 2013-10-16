@@ -43,8 +43,9 @@ public class Resource {
         if (!allowedGroups.isEmpty()) {
             StringBuilder reason = new StringBuilder("Access is available for members of groups: ['");
             for (Group allowedGroup : allowedGroups) {
-                reason.append(allowedGroup.toString());
+                reason.append(allowedGroup.toString()+",");
             }
+            reason.deleteCharAt(reason.lastIndexOf(","));
             reason.append("']");
             return new AuthorizationResponse(false, reason.toString());
         }

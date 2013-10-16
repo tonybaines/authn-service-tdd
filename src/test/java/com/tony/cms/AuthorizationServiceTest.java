@@ -23,10 +23,13 @@ public class AuthorizationServiceTest {
         protectedResources.addResource(protectedResourceUser2Allowed());
         protectedResources.addResource(protectedResourceUsers1and2Allowed());
         protectedResources.addResource(protectedResourceGroup1Allowed());
+        protectedResources.addResource(protectedResourceGroup2Allowed());
+        protectedResources.addResource(protectedResourceGroups1And2Allowed());
 
         authnService = Mockito.mock(AuthenticationService.class);
         when(authnService.isAuthenticated(authenticatedUser1())).thenReturn(true);
         when(authnService.isAuthenticated(authenticatedUser2())).thenReturn(true);
+        when(authnService.isAuthenticated(authenticatedUser3())).thenReturn(true);
 
         authzService = new AuthorizationService(protectedResources, authnService);
     }
@@ -87,9 +90,9 @@ public class AuthorizationServiceTest {
 
     @Test
     public void shouldGetAListOfAllowedGroupsWhenAuthorizationFailsForAnAuthenticatedUserAndGroupsAreDefinedForTheResource() throws Exception {
-        AuthorizationResponse authzResponse = authzService.isAllowed(authenticatedUser2(), protectedResourceGroup1Allowed());
+        AuthorizationResponse authzResponse = authzService.isAllowed(authenticatedUser3(), protectedResourceGroups1And2Allowed());
         assertThat(authzResponse.allowed(), is(false));
-        assertThat(authzResponse.reason(), is("Access is available for members of groups: ['group-1']"));
+        assertThat(authzResponse.reason(), is("Access is available for members of groups: ['group-1,group-2']"));
     }
 
     public static class Fixture {
@@ -99,6 +102,10 @@ public class AuthorizationServiceTest {
 
         public static User authenticatedUser2() {
             return new User("authenticatedUser2");
+        }
+
+        public static User authenticatedUser3() {
+            return new User("authenticatedUser3");
         }
 
         public static Group group1() {
@@ -140,6 +147,10 @@ public class AuthorizationServiceTest {
 
         public static Resource protectedResourceGroup2Allowed() {
             return new Resource("/protected/thing/by-group/2", group2());
+        }
+
+        public static Resource protectedResourceGroups1And2Allowed() {
+            return new Resource("/protected/thing/by-groups/1/2", group1(), group2());
         }
     }
 }
